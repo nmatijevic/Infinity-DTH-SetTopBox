@@ -1,0 +1,136 @@
+create table SetTopBox (
+	setTopBoxId number primary key,
+	STBType varchar(50) not null,
+	STBlength number not null,
+	STBbreadth number not null,
+	STBwidth number not null,
+	price number not null,
+	installationCharges number not null,
+	updationCharges number not null,
+	percentageDiscount number not null,
+	billingType varchar(30) not null,
+	refundAmount number not null
+);
+
+create table SetTopBoxInventory(
+	setTopBoxId number primary key references SetTopBox(setTopBoxId),
+	STBtype varchar(20) not null,
+	serialNumber number unique not null,
+	macId varchar(20) unique not null,
+	remoteAssetId number unique not null,
+	dishAssetId number unique not null,
+	setTopBoxStatus varchar(20) default 'Unassigned'
+);
+
+CREATE TABLE Package (
+	pkgId number unique,
+	pkgName varchar(30) not null,
+	pkgChargeType varchar(20) not null,
+	pkgTransmissionType varchar(20) not null,
+	pkgCost number not null,
+	pkgFromDate date not null,
+	pkgToDate date not null,
+	pkgByDefault varchar(10) not null
+);
+
+create table PackageCategory (
+	pkgCategoryId number Primary Key,
+	pkgCategoryName varchar(30)
+);
+
+CREATE TABLE Package_PackageCategory (
+	PkgId NUMBER REFERENCES Package (pkgId),
+	pkgCategoryId NUMBER REFERENCES FEATURE (pkgCategoryId)
+);
+
+CREATE TABLE Channel (
+	channelId number unique,
+	channelName varchar(30) not null,
+	channelBand varchar(20) not null,
+	videoFrequency number not null,
+	audioFrequency number not  null,
+	channelChargeType varchar(20) not null,
+	channelTransmissionType varchar (20) not null,
+	channelCharge number not null,
+	channelEnableOrDisable varchar(50) not null,
+	pkgCategoryId references PackageCategory(pkgCategoryId)
+);
+
+CREATE TABLE FEATURE (
+	featureId NUMBER PRIMARY KEY,
+	featureName VARCHAR(50)
+);
+
+CREATE TABLE SETTOPBOX_FEATURE (
+	setTopBoxId NUMBER REFERENCES SetTopBox (setTopBoxId),
+	featureId NUMBER REFERENCES FEATURE (featureId)
+);
+
+
+/* Sequence for SetTopBox table. Access using stb_seq.nextval */
+Create sequence stb_seq
+start with 1
+increment by 1
+nocycle;
+
+/* Sequence for SetTopBoxInventory */
+Create sequence stbinventory_seq
+start with 1
+increment by 1
+nocycle;
+
+/* Sequence for PackageCategory */
+Create sequence packagecategory_seq
+start with 1
+increment by 1
+nocycle;
+
+/* Sequence for Package */
+Create sequence package_seq
+start with 1
+increment by 1
+nocycle;
+
+/* Sequence for Channel */
+Create sequence channel_seq
+start with 1
+increment by 1
+nocycle;
+
+/* Sequence for Feature */
+Create sequence frequency_seq
+start with 1
+increment by 1
+nocycle;
+
+/* Insertion data into features */
+insert into FEATURE values (frequency_seq.nextval, 'Multi Lingual');
+insert into FEATURE values (frequency_seq.nextval, 'Genre Wise Channel Guide');
+insert into FEATURE values (frequency_seq.nextval, 'Live Recording');
+insert into FEATURE values (frequency_seq.nextval, 'Scheduled Recording');
+insert into FEATURE values (frequency_seq.nextval, 'Pause/Play');
+insert into FEATURE values (frequency_seq.nextval, 'Rewind/Forward');
+insert into FEATURE values (frequency_seq.nextval, 'Slow Motion');
+insert into FEATURE values (frequency_seq.nextval, 'Child Lock');
+insert into FEATURE values (frequency_seq.nextval, 'Preview Screen');
+insert into FEATURE values (frequency_seq.nextval, 'Program Reminder');
+
+/* Insert data into package */
+insert into PACKAGE values (package_seq.nextval, 'Kids', 'Paid by default', 'Standard', 2, '2019-01-01', '2020-12-31', 'True');
+insert into PACKAGE values (package_seq.nextval, 'Regional', 'Freet to air', 'Standard', 0, 2019-06-01', '2024-05-31', 'False');
+insert into PACKAGE values (package_seq.nextval, 'Informative', 'Free to air', 'HD', 0, '2019-01-01' '2028-12-31', 'True');
+insert into PACKAGE values (package_seq.nextval, 'Music', 'Paid by default', 'HD', 5, '2019-06-01', '2024-05-31', 'False');
+insert into PACKAGE values (package_seq.nextval, 'Movies', 'Paid by default', 'HD', 8, '2019-01-01', '2028-12-31');
+
+/* Insert data into channel */
+insert into CHANNEL values (channel_seq.nextval, 'Disney','I', 65, 70, 'Paid', 'Standard', 1, 'Enabled', 1 );
+insert into CHANNEL values (channel_seq.nextval, 'Discovery', 'II', 100, 105, 'Free to air', 'HD', 0, 'Disabled', 3);
+insert into CHANNEL values (channel_seq.nextval, 'MTV', 'III', 125, 130, 'Paid', 'HD', 2, 'Enabled', 4);
+insert into CHANNEL values (channel_seq.nextval, 'History TV', 200, 205, 'Free to air', 0, 'Enabled', 3);
+
+/*Insert data into packagecategories */
+Insert into PACKAGECATEGORY values(packagecategory_seq.nextval,'Kids');
+Insert into PACKAGECATEGORY values(packagecategory_seq.nextval,'Regional');
+Insert into PACKAGECATEGORY values(packagecategory_seq.nextval,'Informative');
+Insert into PACKAGECATEGORY values(packagecategory_seq.nextval,'Movie');
+Insert into PACKAGECATEGORY values(packagecategory_seq.nextval,'Music');
